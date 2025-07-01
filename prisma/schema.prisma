@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  name                String?
+  image               String?
+  emailVerified       DateTime?
+  subscriptionStatus  String   @default("free")
+  isExtraAuth         Boolean  @default(false)
+  password            String?  // hashed password for credentials auth
+
+  accounts            Account[]
+  sessions            Session[]
+  locations           Location[]
+  weatherAlerts       WeatherAlert[]
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  city      String
+  country   String
+  isPrimary Boolean  @default(false)
+  weatherAlerts WeatherAlert[]
+}
+
+model WeatherAlert {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  location    Location @relation(fields: [locationId], references: [id])
+  locationId  String
+  condition   String   // e.g., "temperature", "humidity"
+  threshold   Float
+}
