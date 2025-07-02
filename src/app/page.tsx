@@ -45,22 +45,13 @@ export default function WeatherDeskLanding() {
     setError("");
     setSuccess("");
     if (isLogin) {
-      // Login flow (custom API)
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+      // Login flow (NextAuth session)
+      const res = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: "/dashboard"
       });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.error || "Login failed");
-      } else {
-        setSuccess("Login successful! Redirecting...");
-        setTimeout(() => router.push("/dashboard"), 1000);
-      }
+      // Optionally handle errors or success UI here
     } else {
       // Register flow
       if (formData.password !== formData.confirmPassword) {
@@ -96,8 +87,8 @@ export default function WeatherDeskLanding() {
         <div className="absolute top-40 right-20 w-24 h-24 bg-blue-300 bg-opacity-20 rounded-full animate-bounce"></div>
         <div className="absolute bottom-32 left-20 w-40 h-40 bg-purple-300 bg-opacity-15 rounded-full animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-28 h-28 bg-indigo-300 bg-opacity-20 rounded-full animate-bounce"></div>
-      </div>
-
+          </div>
+          
       {/* Floating Weather Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-1/4 animate-float">
@@ -108,8 +99,8 @@ export default function WeatherDeskLanding() {
         </div>
         <div className="absolute bottom-40 left-1/3 animate-float" style={{ animationDelay: '2s' }}>
           <CloudRain className="w-7 h-7 text-blue-300 text-opacity-30" />
-        </div>
-      </div>
+            </div>
+          </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
         <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-center">
@@ -126,11 +117,11 @@ export default function WeatherDeskLanding() {
                   Weather<span className="text-gradient bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Desk</span>
                 </h1>
               </div>
-              
+
               <p className="text-xl text-blue-100 max-w-md mx-auto lg:mx-0">
                 Your personal weather command center. Get real-time forecasts, detailed analytics, and beautiful weather insights.
               </p>
-            </div>
+                  </div>
 
             {/* Feature Highlights */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
@@ -140,25 +131,25 @@ export default function WeatherDeskLanding() {
                 </div>
                 <span className="text-sm">Location-based forecasts</span>
               </div>
-              
+
               <div className="flex items-center space-x-3 text-white">
                 <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
                   <Thermometer className="w-5 h-5" />
                 </div>
                 <span className="text-sm">Detailed analytics</span>
-              </div>
+                </div>
               
               <div className="flex items-center space-x-3 text-white">
                 <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                   <Wind className="w-5 h-5" />
                 </div>
                 <span className="text-sm">Wind & pressure data</span>
-              </div>
-              
+            </div>
+
               <div className="flex items-center space-x-3 text-white">
                 <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
                   <Droplets className="w-5 h-5" />
-                </div>
+                  </div>
                 <span className="text-sm">Humidity tracking</span>
               </div>
             </div>
@@ -193,7 +184,7 @@ export default function WeatherDeskLanding() {
                   >
                     Register
                   </button>
-                </div>
+                      </div>
 
                 {/* Form */}
                 <form className="space-y-6" onSubmit={handleSubmit}>
@@ -243,7 +234,7 @@ export default function WeatherDeskLanding() {
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
-                  </div>
+            </div>
 
                   {!isLogin && (
                     <div className="relative">

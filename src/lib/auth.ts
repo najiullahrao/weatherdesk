@@ -36,8 +36,12 @@ export const authOptions: NextAuthOptions = {
     strategy: "database",
   },
   callbacks: {
-    async session({ session , user }) {
+    async session({ session, user }) {
       session.user.id = user.id;
+      const customUser = user as any;
+      session.user.isExtraAuth = customUser.isExtraAuth;
+      session.user.subscriptionStatus = customUser.subscriptionStatus;
+      session.user.emailVerified = customUser.emailVerified;
       return session;
     },
   },
