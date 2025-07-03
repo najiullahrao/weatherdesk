@@ -16,38 +16,48 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    setSigningOut(true);
     localStorage.removeItem("user");
-    signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: "/" });
+    // No need to setSigningOut(false) because redirect will happen
   };
 
   return (
     <aside
-      className={`h-screen ${collapsed ? "w-16" : "w-60"} bg-gradient-to-b from-blue-50 via-blue-100 to-white border-r border-blue-100 text-blue-900 flex flex-col shadow-xl transition-all duration-300 fixed md:static z-20`}
+      className={`h-screen ${collapsed ? "w-16" : "w-60"} bg-gradient-to-b from-blue-200 via-blue-100 to-blue-50 border-r border-blue-100 text-blue-900 flex flex-col shadow-xl transition-all duration-300 fixed md:static z-20`}
     >
-      {/* Toggle Arrow */}
-      <div className={`flex items-center ${collapsed ? "justify-center" : "justify-end"} px-2 pt-4 pb-2`}> 
-        <button
-          onClick={() => setCollapsed((c) => !c)}
-          className="p-2 rounded-full hover:bg-blue-100 transition-colors"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? (
-            <ChevronRight className="w-5 h-5" />
-          ) : (
+      {/* App Name + Toggle Arrow */}
+      {!collapsed ? (
+        <div className="flex items-center justify-between px-4 py-6 border-b border-blue-100">
+          <div className="flex items-center gap-2">
+            <CloudSun className="w-8 h-8 text-blue-500" />
+            <span className="text-2xl font-extrabold tracking-tight text-blue-700">WeatherDesk</span>
+          </div>
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            className="p-2 rounded-full hover:bg-blue-100 transition-colors"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
             <ChevronLeft className="w-5 h-5" />
-          )}
-        </button>
-      </div>
-      {/* App Name */}
-      {!collapsed && (
-        <div className="flex items-center gap-2 px-6 py-6 border-b border-blue-100">
-          <span className="text-2xl font-extrabold tracking-tight text-blue-700">WeatherDesk</span>
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center pt-4 pb-2 border-b border-blue-100">
+          <CloudSun className="w-8 h-8 text-blue-500 mb-2" />
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            className="p-2 rounded-full hover:bg-blue-100 transition-colors"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
       )}
       <nav className={`flex-1 ${collapsed ? "px-2" : "px-4"} py-6 space-y-3`}> 
@@ -76,10 +86,16 @@ export default function Sidebar() {
       <div className={`pb-6 ${collapsed ? "px-2" : "px-4"}`}>
         <button
           onClick={handleSignOut}
-          className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold shadow-lg hover:from-blue-500 hover:to-blue-700 transition-all`}
+          disabled={signingOut}
+          className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold shadow-lg hover:from-blue-500 hover:to-blue-700 transition-all
+            ${signingOut ? "opacity-60 cursor-not-allowed" : ""}`}
         >
-          <LogOut className="w-5 h-5" />
-          {!collapsed && "Sign out"}
+          {signingOut ? (
+            <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+          ) : (
+            <LogOut className="w-5 h-5" />
+          )}
+          {!collapsed && (signingOut ? "Signing out..." : "Sign out")}
         </button>
       </div>
     </aside>

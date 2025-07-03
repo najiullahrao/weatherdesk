@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Loader2, Sun, CloudRain, Cloud, CloudSnow, Wind, Calendar, MapPin, RefreshCw } from "lucide-react";
+import { Loader2, Sun, CloudRain, Cloud, CloudSnow, Wind, Calendar, MapPin, RefreshCw, Thermometer, Droplets, Eye, ArrowUpDown } from "lucide-react";
+import DashboardNavbar from "@/components/DashboardNavbar";
 
 function getWeatherIcon(code: number, size: number = 32) {
   const iconProps = { size, className: "inline-block align-middle mr-1 drop-shadow" };
@@ -116,10 +117,24 @@ export default function Dashboard() {
   const forecastByDay = groupForecastByDay(forecast);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white p-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-800 text-center flex-1">Weather in Your Current Location</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white">
+      <DashboardNavbar />
+      <div className="max-w-3xl mx-auto p-4">
+        {/* Header with icon */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+          <div className="flex items-center gap-4 flex-1">
+            {/* Main weather icon */}
+            <div className="bg-blue-100 rounded-full p-4 shadow-md flex items-center justify-center">
+              {getWeatherIcon(today.weather[0].id, 56)}
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-blue-800">Weather in Your Current Location</h1>
+              <div className="text-blue-500 text-lg font-medium mt-1 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-blue-400" />
+                {location.city}, {location.country}
+              </div>
+            </div>
+          </div>
           <button
             onClick={handleRefresh}
             className={`ml-0 md:ml-4 p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors shadow ${refreshing ? "animate-spin" : ""}`}
@@ -129,33 +144,31 @@ export default function Dashboard() {
             <RefreshCw className="w-6 h-6 text-blue-500" />
           </button>
         </div>
-        <div className="text-right text-xs text-blue-400 mb-2">Location accuracy depends on your device/browser.</div>
-        {/* Today's Weather Card */}
+        <div className="text-right text-xs text-blue-400 mb-4">Location accuracy depends on your device/browser.</div>
+        {/* Today's Weather Card with icons */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 flex flex-col md:flex-row items-center gap-8 border border-blue-100">
-          <div className="flex-1 flex flex-col items-center md:items-start">
+          <div className="flex-1 flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-6 h-6 text-blue-400" />
-              <span className="text-2xl font-bold text-blue-800 drop-shadow">{location.city}, {location.country}</span>
-            </div>
-            <div className="flex items-center gap-4 mb-2">
-              {getWeatherIcon(today.weather[0].id, 56)}
+              <Thermometer className="w-5 h-5 text-blue-400" />
               <span className="text-6xl font-extrabold text-blue-700 drop-shadow">{Math.round(today.main.temp)}°C</span>
             </div>
-            <div className="text-lg text-blue-500 capitalize mb-2 font-medium">{today.weather[0].description}</div>
-            <div className="flex gap-6 text-blue-400 text-sm">
-              <span>Feels like: {Math.round(today.main.feels_like)}°C</span>
-              <span>Humidity: {today.main.humidity}%</span>
-              <span>Wind: {today.wind.speed} m/s</span>
+            <div className="text-lg text-blue-500 capitalize mb-2 font-medium flex items-center gap-2">
+              {getWeatherIcon(today.weather[0].id, 28)}
+              {today.weather[0].description}
+            </div>
+            <div className="flex gap-6 text-blue-400 text-sm mt-2">
+              <span className="flex items-center gap-1"><Droplets className="w-4 h-4" />Humidity: {today.main.humidity}%</span>
+              <span className="flex items-center gap-1"><Wind className="w-4 h-4" />Wind: {today.wind.speed} m/s</span>
             </div>
           </div>
-          <div className="flex-1 flex flex-col items-center md:items-end">
-            <div className="text-blue-400 text-sm mb-2">High: {Math.round(today.main.temp_max)}°C / Low: {Math.round(today.main.temp_min)}°C</div>
-            <div className="text-blue-400 text-sm">Pressure: {today.main.pressure} hPa</div>
-            <div className="text-blue-400 text-sm">Visibility: {today.visibility / 1000} km</div>
+          <div className="flex-1 flex flex-col items-center md:items-end gap-2">
+            <div className="flex items-center gap-2 text-blue-400 text-sm mb-2"><ArrowUpDown className="w-4 h-4" />High: {Math.round(today.main.temp_max)}°C / Low: {Math.round(today.main.temp_min)}°C</div>
+            <div className="flex items-center gap-2 text-blue-400 text-sm"><Eye className="w-4 h-4" />Visibility: {today.visibility / 1000} km</div>
+            <div className="flex items-center gap-2 text-blue-400 text-sm"><Cloud className="w-4 h-4" />Pressure: {today.main.pressure} hPa</div>
           </div>
         </div>
         {/* 5-Day Forecast */}
-        <h2 className="text-2xl font-bold text-blue-700 mb-4">5-Day Forecast</h2>
+        <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2"><Calendar className="w-6 h-6 text-blue-400" />5-Day Forecast</h2>
         <div className="flex gap-4 overflow-x-auto pb-2 snap-x">
           {forecastByDay.map(([date, items]) => {
             const midday = items[Math.floor(items.length / 2)];
@@ -164,12 +177,12 @@ export default function Dashboard() {
                 key={date}
                 className="bg-white rounded-xl p-4 min-w-[200px] flex flex-col items-center shadow border border-blue-100 transition-transform duration-200 hover:scale-105 snap-center"
               >
-                <span className="font-semibold text-blue-400 mb-2">{date}</span>
+                <span className="font-semibold text-blue-400 mb-2 flex items-center gap-1"><Calendar className="w-4 h-4" />{date}</span>
                 {getWeatherIcon(midday.weather[0].id, 40)}
                 <span className="text-3xl font-bold text-blue-700 mt-2 drop-shadow">{Math.round(midday.main.temp)}°C</span>
                 <span className="capitalize text-blue-500 mt-1 font-medium">{midday.weather[0].description}</span>
-                <span className="text-blue-400 text-xs mt-1">Humidity: {midday.main.humidity}%</span>
-                <span className="text-blue-400 text-xs">Wind: {midday.wind.speed} m/s</span>
+                <span className="text-blue-400 text-xs mt-1 flex items-center gap-1"><Droplets className="w-3 h-3" />{midday.main.humidity}%</span>
+                <span className="text-blue-400 text-xs flex items-center gap-1"><Wind className="w-3 h-3" />{midday.wind.speed} m/s</span>
               </div>
             );
           })}
@@ -178,3 +191,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+

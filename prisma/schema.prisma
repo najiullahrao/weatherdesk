@@ -16,6 +16,7 @@ model User {
   subscriptionStatus  String   @default("free")
   isExtraAuth         Boolean  @default(false)
   password            String?  // hashed password for credentials auth
+  stripeCustomerId    String?  // Stripe customer ID for billing
 
   accounts            Account[]
   sessions            Session[]

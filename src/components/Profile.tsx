@@ -1,9 +1,12 @@
 "use client";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 export default function Profile() {
   const { data: session } = useSession();
   const user = session?.user;
+  const [loading, setLoading] = useState(false);
+
   // These fields may not be present in the session, so fallback to 'N/A'
   const fields = [
     { label: "User ID", value: user?.id || "N/A" },
@@ -13,6 +16,14 @@ export default function Profile() {
     { label: "Subscription Status", value: user?.subscriptionStatus || "N/A" },
     { label: "Extra Auth (Google)", value: user?.isExtraAuth !== undefined ? (user.isExtraAuth ? "Yes" : "No") : "N/A" },
   ];
+
+  const handleManageSubscription = async () => {
+    setLoading(true);
+    const res = await fetch("/api/create-portal-session", { method: "POST" });
+    const { url } = await res.json();
+    window.location.href = url;
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 w-full">
       <div className="w-24 h-24 rounded-full border-4 border-blue-200 flex items-center justify-center text-3xl font-bold text-blue-700 mb-2 overflow-hidden bg-blue-50">
@@ -30,12 +41,15 @@ export default function Profile() {
           </div>
         ))}
       </div>
-      {/* <button
-        onClick={() => signOut()}
-        className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow font-medium transition-colors"
-      >
-        Logout
-      </button> */}
+      {user?.subscriptionStatus === "active" && (
+        <button
+          onClick={handleManageSubscription}
+          disabled={loading}
+          className={`mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow font-medium transition-colors hover:from-blue-600 hover:to-blue-800 ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
+        >
+          {loading ? "Loading..." : "Manage Subscription"}
+        </button>
+      )}
     </div>
   );
 }

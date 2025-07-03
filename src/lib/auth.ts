@@ -37,11 +37,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, user }) {
-      session.user.id = user.id;
-      const customUser = user as any;
-      session.user.isExtraAuth = customUser.isExtraAuth;
-      session.user.subscriptionStatus = customUser.subscriptionStatus;
-      session.user.emailVerified = customUser.emailVerified;
+      // Always fetch the latest user data from the database
+      const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+      if (dbUser) {
+        session.user.id = dbUser.id;
+        session.user.isExtraAuth = dbUser.isExtraAuth;
+        session.user.subscriptionStatus = dbUser.subscriptionStatus;
+        session.user.emailVerified = dbUser.emailVerified;
+      }
       return session;
     },
   },
