@@ -21,7 +21,7 @@ export default function DashboardNavbar() {
         <span className="text-xl font-bold text-blue-700 tracking-tight hidden md:inline">Welcome Back, {username}</span>
       </div>
       <div className="flex-1 flex justify-end">
-        <span className="text-blue-800 font-semibold text-base md:text-lg">Dashboard</span>
+        {/* <span className="text-blue-800 font-semibold text-base md:text-lg">Dashboard</span> */}
       </div>
     </nav>
   );

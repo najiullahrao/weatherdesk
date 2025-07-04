@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
 import Loader from "@/components/Loader";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 const PREMIUM_PRICE_ID = "price_1RgkCJAUW58rKR8DgMxzQw74"; // TODO: Replace with your real Stripe priceId
 
 export default function PricingPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubscribe = async () => {
     setLoading(true);
@@ -19,7 +22,16 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white flex items-center justify-center p-4 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-6 left-6 flex items-center gap-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-blue-700 px-4 py-2 rounded-lg shadow border border-blue-100 font-medium transition-colors z-20"
+        aria-label="Go back"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Back
+      </button>
       <div className="max-w-3xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Free Plan */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-blue-100 flex flex-col items-center">
@@ -39,7 +51,7 @@ export default function PricingPage() {
           <p className="text-4xl font-extrabold text-blue-700 mb-4">$9.99<span className="text-base font-normal">/mo</span></p>
           <ul className="text-blue-900 mb-6 space-y-2 text-center">
             <li>All Free features</li>
-            <li>Weather alerts</li>
+            {/* <li>Weather alerts</li> */}
             <li>Extended 10+ day forecasts</li>
             <li>Historical weather data</li>
             <li>Priority support</li>
@@ -49,7 +61,7 @@ export default function PricingPage() {
             disabled={loading}
             className={`bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-lg font-semibold w-full shadow hover:from-blue-600 hover:to-blue-800 transition-all ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
           >
-            {loading ? <span className="flex items-center justify-center"><Loader /> Subscribing...</span> : "Subscribe"}
+            {loading ? <span className="flex items-center justify-center">Subscribing...</span> : "Subscribe"}
           </button>
         </div>
       </div>

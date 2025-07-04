@@ -33,17 +33,30 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   callbacks: {
-    async session({ session, user }) {
-      // Always fetch the latest user data from the database
-      const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-      if (dbUser) {
-        session.user.id = dbUser.id;
-        session.user.isExtraAuth = dbUser.isExtraAuth;
-        session.user.subscriptionStatus = dbUser.subscriptionStatus;
-        session.user.emailVerified = dbUser.emailVerified;
+    async jwt({ token, user }) {
+      // Always fetch the latest user data from the database for every JWT callback
+      const userId = user?.id || token.id;
+      if (userId) {
+        const dbUser = await prisma.user.findUnique({ where: { id: userId } });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.isExtraAuth = dbUser.isExtraAuth;
+          token.subscriptionStatus = dbUser.subscriptionStatus;
+          token.emailVerified = dbUser.emailVerified;
+        }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Attach user info from token to session
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.isExtraAuth = token.isExtraAuth as boolean | undefined;
+        session.user.subscriptionStatus = token.subscriptionStatus as string | undefined;
+        session.user.emailVerified = token.emailVerified as string | null | undefined;
       }
       return session;
     },

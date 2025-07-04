@@ -31,7 +31,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`h-screen ${collapsed ? "w-16" : "w-60"} bg-gradient-to-b from-blue-200 via-blue-100 to-blue-50 border-r border-blue-100 text-blue-900 flex flex-col shadow-xl transition-all duration-300 fixed md:static z-20`}
+      className={`hidden md:flex sticky top-0 h-screen ${collapsed ? "w-16" : "w-60"} bg-gradient-to-b from-blue-200 via-blue-100 to-blue-50 border-r border-blue-100 text-blue-900 flex-col shadow-xl transition-all duration-300 z-20`}
     >
       {/* App Name + Toggle Arrow */}
       {!collapsed ? (

@@ -119,9 +119,9 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white">
       <DashboardNavbar />
-      <div className="max-w-3xl mx-auto p-4">
+      <div className="max-w-3xl mx-auto p-4 w-full">
         {/* Header with icon */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4 w-full">
           <div className="flex items-center gap-4 flex-1">
             {/* Main weather icon */}
             <div className="bg-blue-100 rounded-full p-4 shadow-md flex items-center justify-center">
@@ -146,7 +146,7 @@ export default function Dashboard() {
         </div>
         <div className="text-right text-xs text-blue-400 mb-4">Location accuracy depends on your device/browser.</div>
         {/* Today's Weather Card with icons */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 flex flex-col md:flex-row items-center gap-8 border border-blue-100">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-8 border border-blue-100 w-full">
           <div className="flex-1 flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-2 mb-2">
               <Thermometer className="w-5 h-5 text-blue-400" />
@@ -169,13 +169,13 @@ export default function Dashboard() {
         </div>
         {/* 5-Day Forecast */}
         <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2"><Calendar className="w-6 h-6 text-blue-400" />5-Day Forecast</h2>
-        <div className="flex gap-4 overflow-x-auto pb-2 snap-x">
+        <div className="flex gap-4 overflow-x-auto pb-2 snap-x w-full">
           {forecastByDay.map(([date, items]) => {
             const midday = items[Math.floor(items.length / 2)];
             return (
               <div
                 key={date}
-                className="bg-white rounded-xl p-4 min-w-[200px] flex flex-col items-center shadow border border-blue-100 transition-transform duration-200 hover:scale-105 snap-center"
+                className="bg-white rounded-xl p-4 min-w-[200px] flex flex-col items-center shadow border border-blue-100 transition-transform duration-200 hover:scale-105 snap-center w-full md:w-auto"
               >
                 <span className="font-semibold text-blue-400 mb-2 flex items-center gap-1"><Calendar className="w-4 h-4" />{date}</span>
                 {getWeatherIcon(midday.weather[0].id, 40)}

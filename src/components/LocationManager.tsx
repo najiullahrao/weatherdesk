@@ -66,8 +66,30 @@ export default function LocationManager() {
               setCountry(country);
             }}
           />
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              placeholder="City"
+              value={city}
+              onChange={e => setCity(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+          </div>
         </div>
-        <button onClick={addLocation} className="bg-gradient-to-r from-blue-400 to-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:from-blue-500 hover:to-blue-700 transition-all h-10 min-w-[80px]">Add</button>
+        <button
+          onClick={addLocation}
+          className={`bg-gradient-to-r from-blue-400 to-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:from-blue-500 hover:to-blue-700 transition-all h-10 min-w-[80px] ${(!city || !country) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={!city || !country}
+        >
+          Add
+        </button>
       </div>
       {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
       {loading ? (
