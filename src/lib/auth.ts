@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       // Always fetch the latest user data from the database for every JWT callback
-      const userId = user?.id || token.id;
+      const userId = typeof user?.id === 'string' ? user.id : (typeof token.id === 'string' ? token.id : undefined);
       if (userId) {
         const dbUser = await prisma.user.findUnique({ where: { id: userId } });
         if (dbUser) {
